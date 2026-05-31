@@ -1,0 +1,111 @@
+name: Nightly Reading Notification
+
+on:
+  schedule:
+    # Adjust to your preferred time. This is 10 PM ET (2 AM UTC).
+    # Use https://crontab.guru to find your timezone offset.
+    - cron: '0 2 * * *'
+  workflow_dispatch: # allows manual trigger for testing
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compute day number and send Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+
+          # ── Read config ────────────────────────────────────────────────
+          START_DATE=$(jq -r '.startDate' config.json)
+          SITE_TITLE=$(jq -r '.title' config.json)
+
+          # ── Compute day number ─────────────────────────────────────────
+          START_EPOCH=$(date -d "$START_DATE" +%s)
+          TODAY_EPOCH=$(date -d "$(date +%Y-%m-%d)" +%s)
+          DAY_NUMBER=$(( (TODAY_EPOCH - START_EPOCH) / 86400 + 1 ))
+
+          # Guard: only send if within 1-1000 range
+          if [ "$DAY_NUMBER" -lt 1 ] || [ "$DAY_NUMBER" -gt 1000 ]; then
+            echo "Day $DAY_NUMBER is outside the 1-1000 range. Skipping."
+            exit 0
+          fi
+
+          # ── Read tonight's entry from reading list ─────────────────────
+          ENTRY=$(jq --argjson day "$DAY_NUMBER" '.[$day - 1]' data/reading-list.json)
+
+          POEM_TITLE=$(echo "$ENTRY"   | jq -r '.poem.title')
+          POEM_AUTHOR=$(echo "$ENTRY"  | jq -r '.poem.author')
+          POEM_URL=$(echo "$ENTRY"     | jq -r '.poem.url')
+
+          STORY_TITLE=$(echo "$ENTRY"  | jq -r '.story.title')
+          STORY_AUTHOR=$(echo "$ENTRY" | jq -r '.story.author')
+          STORY_URL=$(echo "$ENTRY"    | jq -r '.story.url')
+
+          ESSAY_TITLE=$(echo "$ENTRY"  | jq -r '.essay.title')
+          ESSAY_AUTHOR=$(echo "$ENTRY" | jq -r '.essay.author')
+          ESSAY_URL=$(echo "$ENTRY"    | jq -r '.essay.url')
+
+          TECH_TITLE=$(echo "$ENTRY"   | jq -r '.tech.title')
+          TECH_AUTHOR=$(echo "$ENTRY"  | jq -r '.tech.author')
+          TECH_URL=$(echo "$ENTRY"     | jq -r '.tech.url')
+
+          INSIGHT_TITLE=$(echo "$ENTRY"  | jq -r '.insight.title')
+          INSIGHT_AUTHOR=$(echo "$ENTRY" | jq -r '.insight.author')
+          INSIGHT_URL=$(echo "$ENTRY"    | jq -r '.insight.url')
+
+          # ── Build site URL for tonight ─────────────────────────────────
+          SITE_URL="https://${{ github.repository_owner }}.github.io/1000-nights/#/day/${DAY_NUMBER}"
+
+          # ── Build Discord embed payload ────────────────────────────────
+          PAYLOAD=$(jq -n \
+            --arg day "$DAY_NUMBER" \
+            --arg site_url "$SITE_URL" \
+            --arg poem_title "$POEM_TITLE" \
+            --arg poem_author "$POEM_AUTHOR" \
+            --arg poem_url "$POEM_URL" \
+            --arg story_title "$STORY_TITLE" \
+            --arg story_author "$STORY_AUTHOR" \
+            --arg story_url "$STORY_URL" \
+            --arg essay_title "$ESSAY_TITLE" \
+            --arg essay_author "$ESSAY_AUTHOR" \
+            --arg essay_url "$ESSAY_URL" \
+            --arg tech_title "$TECH_TITLE" \
+            --arg tech_author "$TECH_AUTHOR" \
+            --arg tech_url "$TECH_URL" \
+            --arg insight_title "$INSIGHT_TITLE" \
+            --arg insight_author "$INSIGHT_AUTHOR" \
+            --arg insight_url "$INSIGHT_URL" \
+            '{
+              embeds: [{
+                title: ("🌙 Night " + $day + " of 1,000"),
+                url: $site_url,
+                color: 8930432,
+                fields: [
+                  { name: "📖 Poem",    value: ("[" + $poem_title    + "](" + $poem_url    + ")\n*" + $poem_author    + "*"), inline: false },
+                  { name: "📚 Story",   value: ("[" + $story_title   + "](" + $story_url   + ")\n*" + $story_author   + "*"), inline: false },
+                  { name: "🖊️ Essay",   value: ("[" + $essay_title   + "](" + $essay_url   + ")\n*" + $essay_author   + "*"), inline: false },
+                  { name: "💻 Tech",    value: ("[" + $tech_title    + "](" + $tech_url    + ")\n*" + $tech_author    + "*"), inline: false },
+                  { name: "🌐 Insight", value: ("[" + $insight_title + "](" + $insight_url + ")\n*" + $insight_author + "*"), inline: false }
+                ],
+                footer: { text: "1000 Nights · Open site for all days →" }
+              }]
+            }')
+
+          # ── POST to Discord ────────────────────────────────────────────
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "$DISCORD_WEBHOOK_URL")
+
+          if [ "$HTTP_STATUS" -ne 204 ]; then
+            echo "Discord webhook returned HTTP $HTTP_STATUS — check your secret."
+            exit 1
+          fi
+
+          echo "✓ Sent Night ${DAY_NUMBER} notification to Discord."
