@@ -78,6 +78,13 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 MIT
 
+## Legal Disclaimer
+
+This project is a curated index of links to public reading materials on the web.
+- **No Hosting of Copyrighted Content**: This repository and the static web app do not host, store, or redistribute any copyrighted texts. All links point directly to the original author's site, official publisher platforms, or public domain libraries (e.g., Project Gutenberg, Wikisource).
+- **Public Domain & Fair Use**: Classical poetry, stories, and historical essays are sourced from public domain databases. Hyperlinking to publicly accessible web resources is fully legal and compliant. All copyrights remain with their respective authors and publishers.
+- **Removal Requests**: If you are a copyright holder and want a link to your work removed, please open an Issue or contact the repository owner to have it removed immediately.
+
 ---
 
 ###### *This project was created using AI with human oversight.*
