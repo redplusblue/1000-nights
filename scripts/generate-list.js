@@ -255,7 +255,7 @@ async function fetchPoems() {
           poems.push({
             title: poem.title,
             author: poem.author,
-            url: `https://poetrydb.org/title/${encodeURIComponent(poem.title)}`,
+            url: `https://www.google.com/search?q=${encodeURIComponent(poem.author + ' ' + poem.title + ' poem')}`,
             source: 'poetrydb',
           });
         }
