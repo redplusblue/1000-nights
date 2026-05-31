@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1000 Nights — A Reading Journey</title>
+  <meta name="description" content="One poem, one short story, one essay, one tech post, and one insight — every night for 1,000 nights. Inspired by Ray Bradbury." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Landing page ── -->
+  <div id="view-landing" class="view hidden">
+    <header class="landing-header">
+      <div class="moon-icon" aria-hidden="true">🌙</div>
+      <h1 class="landing-title">1000 Nights</h1>
+      <p class="landing-quote">
+        "At the end of a thousand nights, Jesus God, you'll be full of stuff, won't you?"
+        <cite>— Ray Bradbury</cite>
+      </p>
+      <p class="landing-subtitle">One poem. One story. One essay. One tech insight. One idea. Every night.</p>
+      <a id="btn-tonight" href="#" class="btn-tonight">Tonight's Reading →</a>
+    </header>
+
+    <section class="day-jump">
+      <label for="day-input">Jump to a specific day</label>
+      <div class="day-jump-row">
+        <input id="day-input" type="number" min="1" max="1000" placeholder="1–1000" />
+        <button id="btn-jump">Go</button>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>All 1,000 days are public. Share any day's link. No account needed.</p>
+    </footer>
+  </div>
+
+  <!-- ── Day view ── -->
+  <div id="view-day" class="view hidden">
+
+    <header class="day-header">
+      <a href="#/" class="back-link">← All Nights</a>
+      <div class="day-meta">
+        <span id="day-label" class="day-label">Day 1</span>
+        <span class="day-total">of 1,000</span>
+      </div>
+      <div class="progress-bar-wrap" role="progressbar" aria-label="Progress through 1000 nights">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </header>
+
+    <!-- Filter pills -->
+    <div class="filters" role="group" aria-label="Content type filters">
+      <button class="pill active" data-type="poem"    id="pill-poem">📖 Poem</button>
+      <button class="pill active" data-type="story"   id="pill-story">📚 Story</button>
+      <button class="pill active" data-type="essay"   id="pill-essay">🖊️ Essay</button>
+      <button class="pill active" data-type="tech"    id="pill-tech">💻 Tech</button>
+      <button class="pill active" data-type="insight" id="pill-insight">🌐 Insight</button>
+    </div>
+
+    <!-- Content cards -->
+    <main id="cards" class="cards"></main>
+
+    <!-- Navigation -->
+    <nav class="day-nav">
+      <a id="nav-prev" href="#" class="nav-btn">← Previous Night</a>
+      <button id="btn-share" class="share-btn" title="Copy link to this day">Share Day</button>
+      <a id="nav-next" href="#" class="nav-btn">Next Night →</a>
+    </nav>
+
+  </div>
+
+  <!-- ── Loading state ── -->
+  <div id="view-loading" class="view loading-screen">
+    <div class="spinner" aria-label="Loading"></div>
+  </div>
+
+  <!-- ── Error state ── -->
+  <div id="view-error" class="view hidden error-screen">
+    <p id="error-msg">Something went wrong.</p>
+    <a href="#/" class="btn-tonight">Back to Home</a>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
