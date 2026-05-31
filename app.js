@@ -69,7 +69,7 @@ function parseHash() {
     filters[t.key] = hasAnyParam ? params.get(t.key) === '1' : true;
   }
 
-  const dayMatch = path.match(/^\/day\/(\d+)$/);
+  const dayMatch = path.match(/^\/day\/?(\d+)$/);
   if (dayMatch) {
     return { route: 'day', day: parseInt(dayMatch[1], 10), filters };
   }
