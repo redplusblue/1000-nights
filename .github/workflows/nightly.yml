@@ -20,6 +20,12 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           set -euo pipefail
+          
+          # ── Check webhook secret ───────────────────────────────────────
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "Error: DISCORD_WEBHOOK_URL secret is not set in GitHub Secrets."
+            exit 1
+          fi
 
           # ── Read config ────────────────────────────────────────────────
           START_DATE=$(jq -r '.startDate' config.json)
