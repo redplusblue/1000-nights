@@ -22,15 +22,15 @@ All content links to free, publicly accessible pages.
 Visit the site and navigate to any day:
 
 ```
-https://<user>.github.io/1000-nights/#/day/1
-https://<user>.github.io/1000-nights/#/day/42
+https://redplusblue.github.io/1000-nights/#/day/1
+https://redplusblue.github.io/1000-nights/#/day/42
 ```
 
 Toggle which content types you care about using the pill filters. The URL updates to reflect your preferences — share it with anyone.
 
 ```
 # Poem + Tech only
-https://<user>.github.io/1000-nights/#/day/42?poem=1&tech=1
+https://redplusblue.github.io/1000-nights/#/day/42?poem=1&tech=1
 ```
 
 ## How It Works
