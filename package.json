@@ -1,0 +1,12 @@
+{
+  "name": "1000-nights",
+  "version": "1.0.0",
+  "description": "A public, static reading guide for 1,000 nights of poetry, stories, essays, and ideas.",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate-list.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
